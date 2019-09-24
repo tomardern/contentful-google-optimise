@@ -1,0 +1,19 @@
+{
+  "name": "contentful-google-optimise",
+  "version": "1.0.0",
+  "description": "A example repo showing how to integrate Google Optimise with Contentful",
+  "main": "index.js",
+  "scripts": {
+    "start": "python -m SimpleHTTPServer 8000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tomardern/contentful-google-optimise.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tomardern/contentful-google-optimise/issues"
+  },
+  "homepage": "https://github.com/tomardern/contentful-google-optimise#readme"
+}

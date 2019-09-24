@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Google Optimise + Contentful</title>
+
+    <style>
+      body {
+        font-family: arial;
+        max-width: 600px;
+        margin: 0px auto;
+      }
+    </style>
+
+    <script src="https://unpkg.com/contentful@7.0.5/dist/contentful.browser.min.js" charset="utf-8"></script>
+    <script>
+      var exports = {}; // quick fix because 'exports' is not defined in rich-text bundle below
+    </script>
+    <script src="https://unpkg.com/@contentful/rich-text-html-renderer@13.4/dist/rich-text-html-renderer.es5.js" charset="utf-8"></script>
+
+    <script>
+      /**
+       * Get the page content for a given URL
+       */
+      const getPageComponents = url => {
+        return contentful
+          .createClient({
+            space: 'y78itz0cojrw',
+            accessToken: 'm9auIFymsOlJk3LS40VeBIxapecV2ufpMwPAKqltOBY'
+          })
+          .getEntries({
+            'fields.url': url,
+            content_type: 'page',
+            include: 10,
+            limit: 1
+          })
+          .then(res => res.items && res.items[0]);
+      };
+
+      /**
+       * Render the component if it matches our experiment rules
+       */
+      const renderComponent = (component, experiment) => {
+        // If this is rich text
+        let str = '';
+        if (component.fields.text && component.fields.text.nodeType === 'document') {
+          str += documentToHtmlString(component.fields.text);
+        }
+        // If it's an image
+        if (component.sys.contentType.sys.id === 'image') {
+          str += `<img src="${component.fields.image.fields.file.url}" />`;
+        }
+
+        // Loop through any child components
+        (component.fields.components || []).forEach(childComponent => {
+          str += renderComponent(childComponent, experiment);
+        });
+
+        return str;
+      };
+
+      /**
+       * Init
+       */
+      getPageComponents().then(pageComponents => {
+        document.body.innerHTML = renderComponent(pageComponents);
+      });
+    </script>
+  </head>
+  <body></body>
+</html>
