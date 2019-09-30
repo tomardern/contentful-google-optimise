@@ -9,16 +9,47 @@
     <style>
       body {
         font-family: arial;
-        max-width: 600px;
-        margin: 0px auto;
+        max-width: 1000px;
+        margin: 50px auto;
+      }
+      .richtext {
+        float: right;
+        width: 50%;
+        padding: 20px;
+        box-sizing: border-box;
+        height: 333px;
+        background: #f6e3e3;
+      }
+
+      img {
+        float: left;
+        width: 50%;
+        height: 333px;
+      }
+
+      a {
+        background: black;
+        color: white;
+        padding: 10px 30px;
+        text-decoration: none;
+      }
+
+      p {
+        margin-bottom: 40px;
       }
     </style>
 
-    <script src="https://unpkg.com/contentful@7.0.5/dist/contentful.browser.min.js" charset="utf-8"></script>
+    <script
+      src="https://unpkg.com/contentful@7.0.5/dist/contentful.browser.min.js"
+      charset="utf-8"
+    ></script>
     <script>
       var exports = {}; // quick fix because 'exports' is not defined in rich-text bundle below
     </script>
-    <script src="https://unpkg.com/@contentful/rich-text-html-renderer@13.4/dist/rich-text-html-renderer.es5.js" charset="utf-8"></script>
+    <script
+      src="https://unpkg.com/@contentful/rich-text-html-renderer@13.4/dist/rich-text-html-renderer.es5.js"
+      charset="utf-8"
+    ></script>
 
     <script>
       /**
@@ -42,11 +73,11 @@
       /**
        * Render the component if it matches our experiment rules
        */
-      const renderComponent = (component, experiment) => {
+      const renderComponents = (component, experiment) => {
         // If this is rich text
         let str = '';
         if (component.fields.text && component.fields.text.nodeType === 'document') {
-          str += documentToHtmlString(component.fields.text);
+          str += '<div class="richtext">' + documentToHtmlString(component.fields.text) + '</div>';
         }
         // If it's an image
         if (component.sys.contentType.sys.id === 'image') {
@@ -55,7 +86,7 @@
 
         // Loop through any child components
         (component.fields.components || []).forEach(childComponent => {
-          str += renderComponent(childComponent, experiment);
+          str += renderComponents(childComponent, experiment);
         });
 
         return str;
@@ -64,8 +95,8 @@
       /**
        * Init
        */
-      getPageComponents().then(pageComponents => {
-        document.body.innerHTML = renderComponent(pageComponents);
+      getPageComponents('base').then(pageComponents => {
+        document.body.innerHTML = renderComponents(pageComponents);
       });
     </script>
   </head>
